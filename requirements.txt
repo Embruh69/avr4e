@@ -11,4 +11,5 @@ markdownify
 bs4
 yatg
 pymongo
+pymediawiki
 flask
