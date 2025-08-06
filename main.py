@@ -35,6 +35,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from typing import List
 from PIL import Image, ImageOps, ImageDraw
+from mediawiki import MediaWiki
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -64,6 +65,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+wiki = MediaWiki(url='https://powerlisting.fandom.com/api.php')
+wiki.user_agent = 'avr4e-powerscraper'
 
 @app.on_event("startup")
 async def startup_event():
@@ -2691,6 +2694,61 @@ async def handle_check_monster(
     return create_check_result_embed(possible_check, choosen, name, ap)
 
 
+@bot.command(aliases=['sp'])
+async def superpower(ctx: commands.Context):
+    try:
+        # Get a random page title
+        title = wiki.random(pages=1)
+
+        # Retrieve the page by title
+        page = wiki.page(title)
+
+        # Get title and URL
+        power_title = page.title
+        power_url = page.url
+
+        # Try to extract a suitable image from the list
+        image_url = None
+        if page.images:
+            valid_images = [
+                img for img in page.images
+                if any(img.lower().endswith(ext) for ext in ['.jpg', '.jpeg', '.png', '.gif'])
+                and 'logo' not in img.lower()
+                and 'icon' not in img.lower()
+            ]
+            if valid_images:
+                image_url = random.choice(valid_images)
+
+        # Extract raw wikitext content
+        raw_text = page.wikitext
+
+        # Extract the "==Capabilities==" section using regex
+        match = re.search(r'==\s*Capabilities\s*==\n(.*?)(?=\n==)', raw_text, re.DOTALL | re.IGNORECASE)
+        capabilities = match.group(1).strip() if match else "No capabilities section found."
+
+        # Clean wiki markup (very basic)
+        capabilities_cleaned = re.sub(r'\[\[(?:[^|\]]*\|)?([^\]]+)\]\]', r'\1', capabilities)  # Replace links
+        capabilities_cleaned = re.sub(r"'''(.*?)'''", r'\1', capabilities_cleaned)  # Bold
+        capabilities_cleaned = re.sub(r"''(.*?)''", r'\1', capabilities_cleaned)    # Italic
+        capabilities_cleaned = re.sub(r'{{[^}]+}}', '', capabilities_cleaned)       # Remove templates
+        capabilities_cleaned = re.sub(r'<.*?>', '', capabilities_cleaned)           # Remove HTML tags
+
+        # Discord Embed
+        embed = discord.Embed(
+            title=power_title,
+            url=power_url,
+            description=f"**Capabilities:**\n{capabilities_cleaned[:2045] + '...' if len(capabilities_cleaned) > 2048 else capabilities_cleaned}",
+            color=discord.Color.purple()
+        )
+
+        if image_url:
+            embed.set_image(url=image_url)
+
+        await ctx.send(embed=embed)
+
+    except Exception as e:
+        await ctx.send(f"An error occurred while fetching the superpower: {str(e)}")
+
 if __name__ == "__main__":
     charaRepo = CharacterUserMapRepository()
     gachaRepo = GachaMapRepository()
@@ -2698,4 +2756,5 @@ if __name__ == "__main__":
     monsterRepo = MonsterListRepository()
     monsterMapRepo = MonstersUserMapRepository()
     main()
+
 
