@@ -301,17 +301,17 @@ async def help(ctx):
     desc += "\n"
     desc += "**Taking Rest**\n"
     desc += "- Short Rest: `!reset sr`\n"
-    desc += "- Extended Rest: `!reset`"
+    desc += "- Extended Rest: `!reset`\n"
     desc += "\n"
     desc += "### Init Tracker\n"
     desc += "- Starting init: `!i begin`\n"
     desc += "- Joining init: `!i join -b <extra init bonus>`\n"
     desc += "- Adding monster/init manually: `!i add <name> -p <init location, *optional*> -ac <ac number, default 0> -fort <fort number, default 0> -ref <reflex number, default 0> -will <will number, default 0>`\n"
-    desc += "- Editing init: `!i edit <name> -p <new init>\n`
-    desc += "- Stop init: `!i end`
+    desc += "- Editing init: `!i edit <name> -p <new init>`\n"
+    desc += "- Stop init: `!i end`\n"
     desc += "\n"
     desc += "### Fun\n"
-    desc += "Random superpower generator: `!sp`\n"
+    desc += "Random superpower generator: `!sp`"
     desc += "\n"
     embed.description = desc
 
@@ -2768,6 +2768,7 @@ if __name__ == "__main__":
     monsterRepo = MonsterListRepository()
     monsterMapRepo = MonstersUserMapRepository()
     main()
+
 
 
 
