@@ -278,29 +278,41 @@ async def help(ctx):
     embed.title = "Avr4e Commands"
     desc = ""
     desc += "## Commands List\n"
-    desc += "- Add to Discord: `;;add <link to sheet>`\n"
-    desc += "- Update: `;;update`\n"
+    desc += "- Add to Discord: `!add <link to sheet>`\n"
+    desc += "- Update: `!update`\n"
+    desc += "- View Sheet: `!sheet`\n"
     desc += "\n"
     desc += "### Actions\n"
-    desc += "- List: `;;a`\n"
-    desc += "- Do action: `;;a <action name>`\n"
-    desc += "- Checks: `;;c <skill name>`\n"
+    desc += "- List: `!a`\n"
+    desc += "- Do action: `!a <action name>`\n"
+    desc += "- Checks: `!c <skill name>`\n"
     desc += "- Action & Check Modifiers:\n"
-    desc += "  - Adv/Dis: `;;a <action> adv/dis` `;;c <skill> adv/dis`\n"
-    desc += "  - Situational Modifier: `;;a <action> -b <amount>` "
+    desc += "  - Adv/Dis: `!a <action> adv/dis` `!c <skill> adv/dis`\n"
+    desc += "  - Situational Modifier: `!a <action> -b <amount>` "
     desc += "`;;c <skill> -b <amount>`\n"
-    desc += "  - Human Mode: `;;a <action> -h` `;;c <skill> -h`\n"
-    desc += "  - Multiroll X times: `;;a <action> -rr X` `;;c <skill> -rr X`\n"
-    desc += "  - Check Level DC: `;;c <skill> -l X`\n"
+    desc += "  - Human Mode: `!a <action> -h` `!c <skill> -h`\n"
+    desc += "  - Multiroll X times: `!a <action> -rr X` `!c <skill> -rr X`\n"
+    desc += "  - Check Level DC: `!c <skill> -l X`\n"
     desc += "  - Action Only:\n"
-    desc += "    - Situational Damage: `;;a <action> -d <amount>`\n"
-    desc += "    - Multi Target: `;;a <action> -t <target1> -t <target2>`\n"
-    desc += "    - Use X Power Point: `;;action <action_name> -u X`\n"
-    desc += "    - Autocrit: `;;a <action_name> crit`\n"
+    desc += "    - Situational Damage: `!a <action> -d <amount>`\n"
+    desc += "    - Multi Target: `!a <action> -t <target1> -t <target2>`\n"
+    desc += "    - Use X Power Point: `!action <action_name> -u X`\n"
+    desc += "    - Autocrit: `!a <action_name> crit`\n"
     desc += "\n"
     desc += "**Taking Rest**\n"
-    desc += "- Short Rest: `;;reset sr`\n"
-    desc += "- Extended Rest: `;;reset`"
+    desc += "- Short Rest: `!reset sr`\n"
+    desc += "- Extended Rest: `!reset`"
+    desc += "\n"
+    desc += "### Init Tracker\n"
+    desc += "- Starting init: `!i begin`\n"
+    desc += "- Joining init: `!i join -b <extra init bonus>`\n"
+    desc += "- Adding monster/init manually: `!i add <name> -p <init location, *optional*> -ac <ac number, default 0> -fort <fort number, default 0> -ref <reflex number, default 0> -will <will number, default 0>`\n"
+    desc += "- Editing init: `!i edit <name> -p <new init>\n`
+    desc += "- Stop init: `!i end`
+    desc += "\n"
+    desc += "### Fun\n"
+    desc += "Random superpower generator: `!sp`\n"
+    desc += "\n"
     embed.description = desc
 
     await ctx.send(embed=embed)
@@ -2756,5 +2768,6 @@ if __name__ == "__main__":
     monsterRepo = MonsterListRepository()
     monsterMapRepo = MonstersUserMapRepository()
     main()
+
 
 
