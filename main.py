@@ -40,7 +40,7 @@ from mediawiki import MediaWiki
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 bot = commands.Bot(
-    command_prefix=";;",
+    command_prefix="!",
     intents=discord.Intents.all(),
     help_command=None
 )
