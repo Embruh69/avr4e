@@ -307,7 +307,7 @@ async def help(ctx):
     desc += "### Init Tracker\n"
     desc += "- Starting init: `!i begin`\n"
     desc += "- Joining init: `!i join -b <extra init bonus>`\n"
-    desc += "- Adding monster/init manually: `!i add <name> <init modifier>` or `!i add <name> -p <init position>\n"
+    desc += "- Adding monster/init manually: `!i add <name> <init modifier>` or `!i add <name> -p <init position>`\n"
     desc += "  Parameters:\n"
     desc += "  - AC Value: `-ac <ac number>` default 0\n"
     desc += "  - Fortitude Value: `-fort <fort number>` default 0\n"
