@@ -2402,13 +2402,25 @@ async def init(ctx: commands.Context, *args: str):
                 sent_message = await ctx.send(message)
                 bot.init_lists[channel_id]["message_id"] = sent_message.id
             else:
-                message_id = bot.init_lists[channel_id]["message_id"]
-                try:
-                    message_obj = await ctx.channel.fetch_message(message_id)
-                    await message_obj.edit(content=message)
-                except:
+                pinned_id = bot.init_lists[channel_id].get("pinned_message_id")
+                if pinned_id:
+                    try:
+                        message_obj = await ctx.channel.fetch_message(pinned_id)
+                        await message_obj.edit(content=message)
+                    except:
+                        sent_message = await ctx.send(message)
+                        try:
+                            await sent_message.pin()
+                        except:
+                            await ctx.send("⚠️ I couldn’t pin the initiative message. Please check my permissions.")
+                        bot.init_lists[channel_id]["pinned_message_id"] = sent_message.id
+                else:
                     sent_message = await ctx.send(message)
-                    bot.init_lists[channel_id]["message_id"] = sent_message.id
+                    try:
+                        await sent_message.pin()
+                    except:
+                        await ctx.send("⚠️ I couldn’t pin the initiative message. Please check my permissions.")
+                    bot.init_lists[channel_id]["pinned_message_id"] = sent_message.id
             return
 
         if args[0] == "begin":
@@ -2439,7 +2451,8 @@ async def init(ctx: commands.Context, *args: str):
             except Exception:
                 await ctx.send("⚠️ I couldn’t pin the initiative message. Please check my permissions.")
 
-            bot.init_lists[channel_id]["message_id"] = sent_message.id
+            # Store pinned message ID
+            bot.init_lists[channel_id]["pinned_message_id"] = sent_message.id
             return
 
         if not bot.init_lists[channel_id]["active"]:
@@ -2560,13 +2573,25 @@ async def init(ctx: commands.Context, *args: str):
                 for name, init in sorted_init:
                     message += f"{name}: {init[0]} (AC: {init[1]}, Fort: {init[2]}, Ref: {init[3]}, Will: {init[4]})\n"
                 message += "```"
-                message_id = bot.init_lists[channel_id]["message_id"]
-                try:
-                    message_obj = await ctx.channel.fetch_message(message_id)
-                    await message_obj.edit(content=message)
-                except:
+                pinned_id = bot.init_lists[channel_id].get("pinned_message_id")
+                if pinned_id:
+                    try:
+                        message_obj = await ctx.channel.fetch_message(pinned_id)
+                        await message_obj.edit(content=message)
+                    except:
+                        sent_message = await ctx.send(message)
+                        try:
+                            await sent_message.pin()
+                        except:
+                            await ctx.send("⚠️ I couldn’t pin the initiative message. Please check my permissions.")
+                        bot.init_lists[channel_id]["pinned_message_id"] = sent_message.id
+                else:
                     sent_message = await ctx.send(message)
-                    bot.init_lists[channel_id]["message_id"] = sent_message.id
+                    try:
+                        await sent_message.pin()
+                    except:
+                        await ctx.send("⚠️ I couldn’t pin the initiative message. Please check my permissions.")
+                    bot.init_lists[channel_id]["pinned_message_id"] = sent_message.id
             except ValueError:
                 await ctx.send("Initiative must be a number")
 
@@ -2629,13 +2654,25 @@ async def init(ctx: commands.Context, *args: str):
                 ini, ac, fort, ref, will, author_id = stats
                 message += f"{name}: {ini} (AC: {ac}, Fort: {fort}, Ref: {ref}, Will: {will})\n"
             message += "```"
-            message_id = bot.init_lists[channel_id]["message_id"]
-            try:
-                message_obj = await ctx.channel.fetch_message(message_id)
-                await message_obj.edit(content=message)
-            except:
+            pinned_id = bot.init_lists[channel_id].get("pinned_message_id")
+            if pinned_id:
+                try:
+                    message_obj = await ctx.channel.fetch_message(pinned_id)
+                    await message_obj.edit(content=message)
+                except:
+                    sent_message = await ctx.send(message)
+                    try:
+                        await sent_message.pin()
+                    except:
+                        await ctx.send("⚠️ I couldn’t pin the initiative message. Please check my permissions.")
+                    bot.init_lists[channel_id]["pinned_message_id"] = sent_message.id
+            else:
                 sent_message = await ctx.send(message)
-                bot.init_lists[channel_id]["message_id"] = sent_message.id
+                try:
+                    await sent_message.pin()
+                except:
+                    await ctx.send("⚠️ I couldn’t pin the initiative message. Please check my permissions.")
+                bot.init_lists[channel_id]["pinned_message_id"] = sent_message.id
 
 
         elif args[0] == "end":
@@ -2812,13 +2849,25 @@ async def init(ctx: commands.Context, *args: str):
                 message += f"{name}: {stats[0]} (AC: {stats[1]}, Fort: {stats[2]}, Ref: {stats[3]}, Will: {stats[4]})\n"
             message += "```"
 
-            message_id = bot.init_lists[channel_id]["message_id"]
-            try:
-                message_obj = await ctx.channel.fetch_message(message_id)
-                await message_obj.edit(content=message)
-            except:
+            pinned_id = bot.init_lists[channel_id].get("pinned_message_id")
+            if pinned_id:
+                try:
+                    message_obj = await ctx.channel.fetch_message(pinned_id)
+                    await message_obj.edit(content=message)
+                except:
+                    sent_message = await ctx.send(message)
+                    try:
+                        await sent_message.pin()
+                    except:
+                        await ctx.send("⚠️ I couldn’t pin the initiative message. Please check my permissions.")
+                    bot.init_lists[channel_id]["pinned_message_id"] = sent_message.id
+            else:
                 sent_message = await ctx.send(message)
-                bot.init_lists[channel_id]["message_id"] = sent_message.id
+                try:
+                    await sent_message.pin()
+                except:
+                    await ctx.send("⚠️ I couldn’t pin the initiative message. Please check my permissions.")
+                bot.init_lists[channel_id]["pinned_message_id"] = sent_message.id
         else:
             await ctx.send(f"Unrecognized subcommand: {args[0]}. Type `!help` for assistance.")
 
