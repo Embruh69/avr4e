@@ -2397,7 +2397,7 @@ async def init(ctx: commands.Context, *args: str):
                 name = combatant[0]
                 initiative, ac, fort, ref, will, author_id = combatant[1]
 
-                message += f"{name}: {initiative} (AC: {ac}, Fort: {fort}, Ref: {ref}, Will: {will})\n"
+                message += f"{name}: {initiative} (AC {ac} F {fort} R {ref} W {will})\n"
             message += "```"
             if not hasattr(bot.init_lists[channel_id], "message_id"):
                 sent_message = await ctx.send(message)
@@ -2572,7 +2572,7 @@ async def init(ctx: commands.Context, *args: str):
                 message = f"```Current initiative: {bot.init_lists[channel_id]['current_turn']} (round {bot.init_lists[channel_id]['round']})\n"
                 message += "===============================\n"
                 for name, init in sorted_init:
-                    message += f"{name}: {init[0]} (AC: {init[1]}, Fort: {init[2]}, Ref: {init[3]}, Will: {init[4]})\n"
+                    message += f"{name}: {init[0]} (AC {init[1]} F {init[2]} R {init[3]} W {init[4]})\n"
                 message += "```"
                 pinned_id = bot.init_lists[channel_id].get("pinned_message_id")
                 if pinned_id:
@@ -2653,7 +2653,7 @@ async def init(ctx: commands.Context, *args: str):
             message += "===============================\n"
             for name, stats in sorted_init:
                 ini, ac, fort, ref, will, author_id = stats
-                message += f"{name}: {ini} (AC: {ac}, Fort: {fort}, Ref: {ref}, Will: {will})\n"
+                message += f"{name}: {ini} (AC {ac} F {fort} R {ref} W {will})\n"
             message += "```"
             pinned_id = bot.init_lists[channel_id].get("pinned_message_id")
             if pinned_id:
@@ -2847,7 +2847,7 @@ async def init(ctx: commands.Context, *args: str):
             message += "===============================\n"
             for combatant in sorted_init:
                 name, stats = combatant
-                message += f"{name}: {stats[0]} (AC: {stats[1]}, Fort: {stats[2]}, Ref: {stats[3]}, Will: {stats[4]})\n"
+                message += f"{name}: {stats[0]} (AC {stats[1]} F {stats[2]} R {stats[3]} W {stats[4]})\n"
             message += "```"
 
             pinned_id = bot.init_lists[channel_id].get("pinned_message_id")
