@@ -36,6 +36,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from typing import List
 from PIL import Image, ImageOps, ImageDraw
+import pytz
 from mediawiki import MediaWiki
 
 load_dotenv()
@@ -1270,16 +1271,16 @@ def add_border_template(url: str, template_path: str, name=""):
     final_image.save(image_path)
     return image_path
 
-
+jkt = pytz.timezone('Asia/Jakarta')
 utc = datetime.timezone.utc
 times = [
-    datetime.time(hour=1, tzinfo=utc)
+    datetime.time(hour=1, tzinfo=jkt)
 ]
 
 
 def get_calendar_name() -> str:
-    start_date = datetime.datetime(2025, 8, 31, 0, 0, 0, tzinfo=utc)
-    now = datetime.datetime.now(utc)
+    start_date = datetime.datetime(2025, 8, 31, 0, 0, 0, tzinfo=jkt)
+    now = datetime.datetime.now(jkt)
     startdelta = start_date - now
     days_start = abs(startdelta.days)
     delta = now - start_date
