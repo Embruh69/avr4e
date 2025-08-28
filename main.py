@@ -2528,10 +2528,10 @@ async def init(ctx: commands.Context, *args: str):
                 name = args[1]
 
                 # Default values
-                ac = "n/a"
-                fort = "n/a"
-                ref = "n/a"
-                will = "n/a"
+                ac = "?"
+                fort = "?"
+                ref = "?"
+                will = "?"
                 author_id = ctx.author.id
 
                 if args[2] != "-p":
