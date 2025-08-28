@@ -2839,7 +2839,7 @@ async def init(ctx: commands.Context, *args: str):
                 next_name = next_combatant[0]
                 next_init, _, _, _, _, next_author_id = next_combatant[1]
                 await ctx.send(
-                    f"Next in line is {next_name}'s turn! (Initiative: {next_init}) <@" + str(next_author_id) + ">")
+                    f"-# Next in line is {next_name}'s turn! (Initiative: {next_init}) <@" + str(next_author_id) + ">")
             except Exception as e:
                 await ctx.send(e)
 
@@ -2999,6 +2999,7 @@ if __name__ == "__main__":
     monsterRepo = MonsterListRepository()
     monsterMapRepo = MonstersUserMapRepository()
     main()
+
 
 
 
