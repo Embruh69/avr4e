@@ -1288,8 +1288,8 @@ def get_calendar_name() -> str:
     date = get_in_game_date(total_sessions+1)
     chapter_number = (total_sessions - 1) // 7 + 1
     session_number = f"{total_sessions:02}"
-    calendar_name = f"{days_start} more days from GO!"
-    # calendar_name = f"{chapter_number}.{session_number} - {date}"
+    # calendar_name = f"{days_start} more days from GO!"
+    calendar_name = f"{chapter_number}.{session_number} - {date}"
     return calendar_name
 
 
@@ -1354,7 +1354,7 @@ async def update_ds(guild_id: int):
 @tasks.loop(time=times)
 async def daily_task_run():
     await update_calendar()
-    # await update_ds(1343085306571915276)
+    await update_ds(1343085306571915276)
     bot_dump_channel = bot.get_channel(1395988000474660935)
     await bot_dump_channel.send(
         "Done updating calendar and downtime.")
