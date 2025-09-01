@@ -1358,7 +1358,7 @@ async def daily_task_run():
         "Done updating calendar and downtime.")
     global_group_chat = bot.get_channel(1395988000474660935)
     await global_group_chat.send(
-        f"📅 {get_calendar_name()}"
+        f"```📅 {get_calendar_name()}```"
     )
 
 
