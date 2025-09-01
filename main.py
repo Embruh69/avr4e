@@ -1281,17 +1281,15 @@ times = [
 def get_calendar_name() -> str:
     start_date = datetime.datetime(2025, 8, 31, 0, 0, 0, tzinfo=jkt)
     now = datetime.datetime.now(jkt)
-    startdelta = start_date - now
-    days_start = abs(startdelta.days)
-    delta = now - start_date
-    total_sessions = int(delta.total_seconds() // (60 * 60 * 24))
-    date = get_in_game_date(total_sessions+1)
-    chapter_number = (total_sessions - 1) // 7 + 1
-    session_number = f"{total_sessions:02}"
-    # calendar_name = f"{days_start} more days from GO!"
+
+    delta_days = (now - start_date).days + 1
+
+    date = get_in_game_date(delta_days)
+    chapter_number = (delta_days - 1) // 7 + 1
+    session_number = f"{delta_days:02}"
+
     calendar_name = f"{chapter_number}.{session_number} - {date}"
     return calendar_name
-
 
 async def update_calendar():
     channel_calendar = bot.get_channel(1396001668633722931)
@@ -1380,10 +1378,10 @@ def get_in_game_date(week_number):
     for month_index, weeks_in_month in enumerate(month_weeks):
         if current_week <= weeks_in_month:
             week_label = {
-                1: "Date of 1-8",
-                2: "Date of 9-16",
-                3: "Date of 17-24",
-                4: "Date of 25-30"
+                1: ", Date of 1-8",
+                2: ", Date of 9-16",
+                3: ", Date of 17-24",
+                4: ", Date of 25-30"
             }[current_week]
             return f"{months[month_index]} {week_label}"
         else:
