@@ -292,7 +292,6 @@ async def help(ctx):
     desc += "  - Adv/Dis: `!a <action> adv/dis` `!c <skill> adv/dis`\n"
     desc += "  - Situational Modifier: `!a <action> -b <amount>` "
     desc += "`!c <skill> -b <amount>`\n"
-    desc += "  - Human Mode: `!a <action> -h` `!c <skill> -h`\n"
     desc += "  - Multiroll X times: `!a <action> -rr X` `!c <skill> -rr X`\n"
     desc += "  - Check Level DC: `!c <skill> -l X`\n"
     desc += "  - Action Only:\n"
