@@ -1355,6 +1355,10 @@ async def daily_task_run():
     bot_dump_channel = bot.get_channel(1395988000474660935)
     await bot_dump_channel.send(
         "Done updating calendar and downtime.")
+    global_group_chat = bot.get_channel(1395988000474660935)
+    await global_group_chat.send(
+        f"```📅 {get_calendar_name()}```"
+    )
 
 
 def get_in_game_date(week_number):
