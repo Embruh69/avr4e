@@ -1576,7 +1576,7 @@ async def downtime_sheet(ctx: commands.Context, url: str = ""):
 async def post_calendar(ctx: commands.Context, *, args=None):
     try:
         await ctx.message.delete()
-        await ctx.send(get_calendar_name())
+        await ctx.send(f"```📅 {get_calendar_name()}```")
     except Exception as e:
         print(e, traceback.format_exc())
         await ctx.send("Error. Please check input again.")
