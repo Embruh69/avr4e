@@ -1572,7 +1572,7 @@ async def downtime_sheet(ctx: commands.Context, url: str = ""):
         await ctx.send("Error. Please check input again.")
     return
 
-@bot.command(aliases=["calendar"])
+@bot.command(aliases=["calendar", "cal"])
 async def post_calendar(ctx: commands.Context, *, args=None):
     try:
         await ctx.message.delete()
