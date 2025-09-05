@@ -7,6 +7,7 @@ import yatg
 import bs4
 import pymongo
 import flask
+import math
 import discord
 import re
 import os
@@ -1361,35 +1362,33 @@ async def daily_task_run():
     )
 
 
-def get_in_game_date(week_number):
+def get_in_game_date(irl_day_number):
     months = [
         "🌸Terra", "🌸Marzen", "🌞Saturna", "🌞Venira",
         "🍂Juvion", "🍂Mercion", "🧊Urantis", "🧊Nevaris"
     ]
 
-    month_weeks = []
-    for i in range(8):
-        if (i + 1) % 2 == 1:
-            month_weeks.append(3)
-        else:
-            month_weeks.append(4)
+    total_irl_days_in_year = 28
+    irl_day_in_year = (irl_day_number - 1) % total_irl_days_in_year + 1
 
-    total_weeks_in_year = sum(month_weeks)
-    week_in_year = (week_number - 1) % total_weeks_in_year + 1
-
-    current_week = week_in_year
-    for month_index, weeks_in_month in enumerate(month_weeks):
-        if current_week <= weeks_in_month:
-            week_label = {
-                1: ", Date of 1-8",
-                2: ", Date of 9-16",
-                3: ", Date of 17-24",
-                4: ", Date of 25-30"
-            }[current_week]
-            return f"{months[month_index]}{week_label}"
-        else:
-            current_week -= weeks_in_month
-
+    month_index = (int(math.floor((irl_day_in_year - 1) * 2 / 7))) % len(months)
+    match (irl_day_in_year-1) % 7:
+        case 0:
+            return f"1 {months[month_index]} - 8 {months[month_index]}"
+        case 1: 
+            return f"9 {months[month_index]} - 16 {months[month_index]}"
+        case 2: 
+            return f"17 {months[month_index]} - 24 {months[month_index]}"
+        case 3: 
+            return f"25 {months[month_index]} - 4 {months[month_index+1]}"
+        case 4: 
+            return f"5 {months[month_index]} - 12 {months[month_index]}"
+        case 5: 
+            return f"13 {months[month_index]} - 20 {months[month_index]}"
+        case 6: 
+            return f"21 {months[month_index]} - 28 {months[month_index]}"
+        case 7:
+            return f"1 {months[month_index]} - 8 {months[month_index]}"
     raise ValueError("Invalid week number computation.")
 
 
