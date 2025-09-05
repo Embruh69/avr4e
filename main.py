@@ -1363,8 +1363,8 @@ async def daily_task_run():
 
 def get_in_game_date(week_number):
     months = [
-        "Terra", "Marzen", "Saturna", "Venira",
-        "Juvion", "Mercion", "Urantis", "Nevaris"
+        "🌸Terra", "🌸Marzen", "🌞Saturna", "🌞Venira",
+        "🍂Juvion", "🍂Mercion", "🧊Urantis", "🧊Nevaris"
     ]
 
     month_weeks = []
@@ -1386,7 +1386,7 @@ def get_in_game_date(week_number):
                 3: ", Date of 17-24",
                 4: ", Date of 25-30"
             }[current_week]
-            return f"{months[month_index]} {week_label}"
+            return f"{months[month_index]}{week_label}"
         else:
             current_week -= weeks_in_month
 
@@ -1572,6 +1572,15 @@ async def downtime_sheet(ctx: commands.Context, url: str = ""):
         await ctx.send("Error. Please check input again.")
     return
 
+@bot.command(aliases=["calendar"])
+async def post_calendar(ctx: commands.Context, *, args=None):
+    try:
+        await ctx.message.delete()
+        await ctx.send(get_calendar_name())
+    except Exception as e:
+        print(e, traceback.format_exc())
+        await ctx.send("Error. Please check input again.")
+    return
 
 @bot.command(aliases=["dt"])
 async def downtime(ctx: commands.Context, *, args=None):
