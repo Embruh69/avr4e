@@ -71,6 +71,7 @@ app.add_middleware(
 wiki = MediaWiki(url='https://powerlisting.fandom.com/api.php')
 wiki.user_agent = 'avr4e-powerscraper'
 
+
 @app.on_event("startup")
 async def startup_event():
     asyncio.create_task(bot.start(TOKEN))
@@ -138,13 +139,15 @@ async def roll(roll: Roll):
         "channel": f"{channel_id}",
     }
 
+
 def table_converter(html: str) -> str:
     tables = re.findall(r'<table.*>.*</table>', html)
     if len(tables) == 0:
         return html
 
     for table in tables:
-        ascii_table = yatg.html_2_ascii_table(html_content=table, output_style="orgmode")
+        ascii_table = yatg.html_2_ascii_table(
+            html_content=table, output_style="orgmode")
         html = html.replace(table, "```" + ascii_table + "```")
     return html
 
@@ -185,7 +188,7 @@ async def search_data(ctx, search, table):
 
         def followup(message):
             return (
-                    message.content.isnumeric() or message.content == "c"
+                message.content.isnumeric() or message.content == "c"
             ) and message.author == ctx.message.author
 
         description = """Do you mean?\n{}""".format(list)
@@ -212,12 +215,14 @@ async def search_data(ctx, search, table):
             if len(description) > 2000:
                 description = description[:2000] + "\n\n... (too long)"
             url = "https://www.dyasdesigns.com/dnd4e/?view={}".format(data[3])
-            embed = discord.Embed(title=title, url=url, description=description)
+            embed = discord.Embed(title=title, url=url,
+                                  description=description)
             embed.set_footer(text=source)
             await option_message.delete()
             await followup_message.delete()
             await ctx.send(embed=embed)
             return
+
 
 def find_inline_roll(content: str):
     pattern = r'\[\[(.*?)\]\]'
@@ -326,6 +331,7 @@ async def help(ctx):
 
     await ctx.send(embed=embed)
 
+
 @bot.command(name="power")
 async def power_search(ctx, *, search):
     await search_data(ctx, search, "power")
@@ -425,6 +431,7 @@ async def paragonpath_search(ctx, *, search):
 async def race_search(ctx, *, search):
     await search_data(ctx, search, "race")
 
+
 @bot.command(aliases=["add"])
 async def add_sheet(ctx: commands.Context, url=""):
     try:
@@ -458,7 +465,7 @@ async def add_sheet(ctx: commands.Context, url=""):
             df_data.to_json(),
             actions_data.to_json(),
             sheet_url=url
-            )
+        )
         await ctx.send(f"Sheet `{name}` is added.", embed=embed)
     except PermissionError:
         await ctx.send("Error. Please check your sheet permission.")
@@ -676,7 +683,7 @@ async def handle_action(
         ap.name,
         na=False,
         case=False
-        )]
+    )]
     ap.thumbnail = data[data['field_name'] == 'Thumbnail']['value'].iloc[0]
     name = data[data['field_name'] == 'Name']['value'].iloc[0]
     if len(possible_action) <= 0:
@@ -851,10 +858,10 @@ def translate_cvar(message, df):
     cvar = df[df['category'] == 'CVAR']
     for _, row in cvar.iterrows():
         if row["field_name"].lower() in [
-                    "adv", "dis", "-t", "-b", "-d",
-                    "crit", "-u", "-adv", "-dis", "crit",
+            "adv", "dis", "-t", "-b", "-d",
+            "crit", "-u", "-adv", "-dis", "crit",
                     "-h"
-                ]:
+        ]:
             continue
         replaceable = fr"\b{re.escape(row['field_name'])}\b"
         message = re.sub(replaceable, str(row["value"]), message)
@@ -873,20 +880,20 @@ async def get_user_choice(
         if idx > 10:
             break
     embed = discord.Embed(
-            title="Multiple Found",
-            description=f"Do you mean?\n{list}"
-        )
+        title="Multiple Found",
+        description=f"Do you mean?\n{list}"
+    )
     embed.set_footer(text="Type 1-10 to choose, or c to cancel.")
     option_message = await ctx.send(embed=embed)
 
     def followup(message: discord.Message):
         return (
             message.content.isnumeric() or message.content == "c"
-            ) and message.author == ctx.message.author
+        ) and message.author == ctx.message.author
     try:
         followup_message = await bot.wait_for(
-                "message", timeout=60.0, check=followup
-            )
+            "message", timeout=60.0, check=followup
+        )
     except asyncio.TimeoutError:
         await option_message.delete()
         await ctx.send("Time Out")
@@ -1271,6 +1278,7 @@ def add_border_template(url: str, template_path: str, name=""):
     final_image.save(image_path)
     return image_path
 
+
 jkt = pytz.timezone('Asia/Jakarta')
 utc = datetime.timezone.utc
 times = [
@@ -1290,6 +1298,7 @@ def get_calendar_name() -> str:
 
     calendar_name = f"{chapter_number}.{session_number} - {date}"
     return calendar_name
+
 
 async def update_calendar():
     channel_calendar = bot.get_channel(1396001668633722931)
@@ -1371,24 +1380,25 @@ def get_in_game_date(irl_day_number):
     total_irl_days_in_year = 28
     irl_day_in_year = (irl_day_number - 1) % total_irl_days_in_year + 1
 
-    month_index = (int(math.floor((irl_day_in_year - 1) * 2 / 7))) % len(months)
-    match (irl_day_in_year-1) % 7:
-        case 0:
-            return f"1 {months[month_index]} - 8 {months[month_index]}"
-        case 1: 
-            return f"9 {months[month_index]} - 16 {months[month_index]}"
-        case 2: 
-            return f"17 {months[month_index]} - 24 {months[month_index]}"
-        case 3: 
-            return f"25 {months[month_index]} - 4 {months[month_index+1]}"
-        case 4: 
-            return f"5 {months[month_index]} - 12 {months[month_index]}"
-        case 5: 
-            return f"13 {months[month_index]} - 20 {months[month_index]}"
-        case 6: 
-            return f"21 {months[month_index]} - 28 {months[month_index]}"
-        case 7:
-            return f"1 {months[month_index]} - 8 {months[month_index]}"
+    month_index = (
+        int(math.floor((irl_day_in_year - 1) * 2 / 7))) % len(months)
+    day_index = (irl_day_in_year-1) % 7
+    if day_index == 0:
+        return f"1 {months[month_index]} - 8 {months[month_index]}"
+    elif day_index == 1:
+        return f"9 {months[month_index]} - 16 {months[month_index]}"
+    elif day_index == 2:
+        return f"17 {months[month_index]} - 24 {months[month_index]}"
+    elif day_index == 3:
+        return f"25 {months[month_index]} - 4 {months[month_index+1]}"
+    elif day_index == 4:
+        return f"5 {months[month_index]} - 12 {months[month_index]}"
+    elif day_index == 5:
+        return f"13 {months[month_index]} - 20 {months[month_index]}"
+    elif day_index == 6:
+        return f"21 {months[month_index]} - 28 {months[month_index]}"
+    elif day_index == 7:
+        return f"1 {months[month_index]} - 8 {months[month_index]}"
     raise ValueError("Invalid week number computation.")
 
 
@@ -1511,9 +1521,9 @@ async def gacha_sheet(ctx: commands.Context, url: str = ""):
         for sheet, chance in chances:
             embed.add_field(name=sheet, value=f"{chance} %", inline=False)
         await ctx.send(
-                content=f"New Gacha [Spreadsheet]({url}) is added.",
-                embed=embed
-            )
+            content=f"New Gacha [Spreadsheet]({url}) is added.",
+            embed=embed
+        )
     except Exception as e:
         print(e, traceback.format_exc())
         await ctx.send("Error. Please check input again.")
@@ -1563,13 +1573,14 @@ async def downtime_sheet(ctx: commands.Context, url: str = ""):
         embed.title = "Downtime Gacha"
         embed.description = ". . ."
         await ctx.send(
-                content=f"New Gacha [Spreadsheet]({url}) is added.",
-                embed=embed
-            )
+            content=f"New Gacha [Spreadsheet]({url}) is added.",
+            embed=embed
+        )
     except Exception as e:
         print(e, traceback.format_exc())
         await ctx.send("Error. Please check input again.")
     return
+
 
 @bot.command(aliases=["calendar", "cal"])
 async def post_calendar(ctx: commands.Context, *, args=None):
@@ -1580,6 +1591,7 @@ async def post_calendar(ctx: commands.Context, *, args=None):
         print(e, traceback.format_exc())
         await ctx.send("Error. Please check input again.")
     return
+
 
 @bot.command(aliases=["dt"])
 async def downtime(ctx: commands.Context, *, args=None):
@@ -1751,14 +1763,14 @@ def log_result_to_sheet(spreadsheet_id: str, df: pd.DataFrame):
 
 
 def create_gacha_log_df(
-            spreadsheet_id: str,
-            channel_id: int,
-            channel_name: str,
-            user_id: int,
-            user_name: str,
-            result: str,
-            details: str = None
-        ) -> bool:
+    spreadsheet_id: str,
+    channel_id: int,
+    channel_name: str,
+    user_id: int,
+    user_name: str,
+    result: str,
+    details: str = None
+) -> bool:
     try:
         data = {
             "timestamp":
@@ -1899,7 +1911,7 @@ async def generate_random_encounter(
             max_xp=max_budget[difficulty],
             monster_list=monster_list,
             keywords=keywords
-            )
+        )
         embed = discord.Embed()
         embed.set_author(
             name=interaction.user.display_name,
@@ -1997,7 +2009,7 @@ def get_budget(avg_level: int, chara: int) -> int:
 async def random_generator_ui(
         interaction: discord.Interaction,
         private: bool = False
-        ):
+):
     async def generate_callback(
             party_level: int = 1,
             chara: int = 5,
@@ -2084,7 +2096,7 @@ async def random_generator_ui(
             max_xp=max_budget[difficulty],
             monster_list=monster_list,
             keywords=keywords
-            )
+        )
         embed = discord.Embed()
         embed.set_author(
             name=interaction.user.display_name,
@@ -2157,7 +2169,7 @@ async def add_monster_sheet(ctx: commands.Context, url=""):
             df_data.to_json(),
             actions_data.to_json(),
             sheet_url=url
-            )
+        )
         await ctx.send(f"Sheet `{name}` is added.")
     except PermissionError:
         await ctx.send("Error. Please check your sheet permission.")
@@ -2228,7 +2240,7 @@ async def monster_sheet(ctx: commands.Context, *, args: str = ""):
         args,
         na=False,
         case=False
-        )].drop_duplicates(subset='monster_name')
+    )].drop_duplicates(subset='monster_name')
     if len(possible_monster) <= 0:
         await ctx.send("No actions found")
         return None
@@ -2328,7 +2340,7 @@ async def handle_action_monster(
         ap.name,
         na=False,
         case=False
-        )]
+    )]
     if len(possible_action) <= 0:
         await ctx.send("No actions found")
         return None
@@ -2384,7 +2396,8 @@ async def init(ctx: commands.Context, *args: str):
     if not hasattr(bot, 'init_lists'):
         bot.init_lists = {}
     if channel_id not in bot.init_lists:
-        bot.init_lists[channel_id] = {"combatants": {}, "current_turn": 0, "round": 0, "active": False}
+        bot.init_lists[channel_id] = {
+            "combatants": {}, "current_turn": 0, "round": 0, "active": False}
     try:
         if not args:
             if not bot.init_lists[channel_id]["active"]:
@@ -2399,7 +2412,8 @@ async def init(ctx: commands.Context, *args: str):
                 bot.init_lists[channel_id]["message_id"] = sent_message.id
                 return
 
-            sorted_init = sorted(bot.init_lists[channel_id]["combatants"].items(), key=lambda x: x[1][0], reverse=True)
+            sorted_init = sorted(bot.init_lists[channel_id]["combatants"].items(
+            ), key=lambda x: x[1][0], reverse=True)
             message = f"```Current initiative: {bot.init_lists[channel_id]['current_turn']} (round {bot.init_lists[channel_id]['round']})\n"
             message += "===============================\n"
             for combatant in sorted_init:
@@ -2477,7 +2491,8 @@ async def init(ctx: commands.Context, *args: str):
 
             data = pd.read_json(io.StringIO(character[2]))
             name = data[data['field_name'] == 'Name']['value'].iloc[0]
-            init_bonus = data[data['field_name'] == 'Initiative']['value'].iloc[0]
+            init_bonus = data[data['field_name']
+                              == 'Initiative']['value'].iloc[0]
             ac = data[data['field_name'] == '`AC`']['value'].iloc[0]
             fort = data[data['field_name'] == '`FORT`']['value'].iloc[0]
             ref = data[data['field_name'] == '`REF`']['value'].iloc[0]
@@ -2523,7 +2538,8 @@ async def init(ctx: commands.Context, *args: str):
                     initiative_result = roll.total
                     await ctx.send(f"{name} rolled {roll} for initiative")
 
-                bot.init_lists[channel_id]["combatants"][name] = [initiative_result, ac, fort, ref, will, ctx.author.id]
+                bot.init_lists[channel_id]["combatants"][name] = [
+                    initiative_result, ac, fort, ref, will, ctx.author.id]
                 await ctx.invoke(bot.get_command("i"))
             except Exception as e:
                 await ctx.send(f"Error when rolling initiative: {str(e)}")
@@ -2573,7 +2589,8 @@ async def init(ctx: commands.Context, *args: str):
                 if not initiative:
                     initiative = d20.roll(f"1d20").total
 
-                bot.init_lists[channel_id]["combatants"][name] = [initiative, ac, fort, ref, will, author_id]
+                bot.init_lists[channel_id]["combatants"][name] = [
+                    initiative, ac, fort, ref, will, author_id]
                 await ctx.send(f"Added {name} with initiative {initiative}")
 
                 sorted_init = sorted(bot.init_lists[channel_id]["combatants"].items(), key=lambda x: x[1][0],
@@ -2604,7 +2621,6 @@ async def init(ctx: commands.Context, *args: str):
                     bot.init_lists[channel_id]["pinned_message_id"] = sent_message.id
             except ValueError:
                 await ctx.send("Initiative must be a number")
-
 
         elif args[0] == "edit":
             if len(args) < 2:
@@ -2653,11 +2669,13 @@ async def init(ctx: commands.Context, *args: str):
                 else:
                     i += 1
 
-            combatants[matched_name] = [initiative, ac, fort, ref, will, author_id]
+            combatants[matched_name] = [
+                initiative, ac, fort, ref, will, author_id]
             await ctx.send(
                 f"Updated **{matched_name}** → Initiative: {initiative}, AC: {ac}, Fort: {fort}, Ref: {ref}, Will: {will}"
             )
-            sorted_init = sorted(combatants.items(), key=lambda x: x[1][0], reverse=True)
+            sorted_init = sorted(combatants.items(),
+                                 key=lambda x: x[1][0], reverse=True)
             message = f"```Current initiative: {bot.init_lists[channel_id]['current_turn']} (round {bot.init_lists[channel_id]['round']})\n"
             message += "===============================\n"
             for name, stats in sorted_init:
@@ -2684,11 +2702,12 @@ async def init(ctx: commands.Context, *args: str):
                     await ctx.send("⚠️ I couldn’t pin the initiative message. Please check my permissions.")
                 bot.init_lists[channel_id]["pinned_message_id"] = sent_message.id
 
-
         elif args[0] == "end":
             confirm_view = discord.ui.View()
-            confirm_button = discord.ui.Button(label="Confirm", style=discord.ButtonStyle.danger)
-            cancel_button = discord.ui.Button(label="Cancel", style=discord.ButtonStyle.secondary)
+            confirm_button = discord.ui.Button(
+                label="Confirm", style=discord.ButtonStyle.danger)
+            cancel_button = discord.ui.Button(
+                label="Cancel", style=discord.ButtonStyle.secondary)
 
             async def confirm_callback(interaction):
                 if interaction.user != ctx.author:
@@ -2728,8 +2747,10 @@ async def init(ctx: commands.Context, *args: str):
                 target_name = matches[0]
 
                 confirm_view = discord.ui.View()
-                confirm_button = discord.ui.Button(label="Confirm", style=discord.ButtonStyle.danger)
-                cancel_button = discord.ui.Button(label="Cancel", style=discord.ButtonStyle.secondary)
+                confirm_button = discord.ui.Button(
+                    label="Confirm", style=discord.ButtonStyle.danger)
+                cancel_button = discord.ui.Button(
+                    label="Cancel", style=discord.ButtonStyle.secondary)
 
                 async def confirm_callback(interaction):
                     if interaction.user != ctx.author:
@@ -2765,14 +2786,15 @@ async def init(ctx: commands.Context, *args: str):
                 for i, name in enumerate(matches, 1):
                     embed.add_field(name=f"{i}.", value=name, inline=False)
 
-                embed.set_footer(text="Reply with the number of the combatant you want to remove.")
+                embed.set_footer(
+                    text="Reply with the number of the combatant you want to remove.")
                 await ctx.send(embed=embed)
 
                 def check(m):
                     return (
-                            m.author.id == ctx.author.id
-                            and m.channel.id == ctx.channel.id
-                            and m.content.isdigit()
+                        m.author.id == ctx.author.id
+                        and m.channel.id == ctx.channel.id
+                        and m.content.isdigit()
                     )
 
                 try:
@@ -2788,8 +2810,10 @@ async def init(ctx: commands.Context, *args: str):
 
                     # Confirm removal
                     confirm_view = discord.ui.View()
-                    confirm_button = discord.ui.Button(label="Confirm", style=discord.ButtonStyle.danger)
-                    cancel_button = discord.ui.Button(label="Cancel", style=discord.ButtonStyle.secondary)
+                    confirm_button = discord.ui.Button(
+                        label="Confirm", style=discord.ButtonStyle.danger)
+                    cancel_button = discord.ui.Button(
+                        label="Cancel", style=discord.ButtonStyle.secondary)
 
                     async def confirm_callback(interaction):
                         if interaction.user != ctx.author:
@@ -2823,7 +2847,8 @@ async def init(ctx: commands.Context, *args: str):
                 await ctx.send("No active combat.")
                 return
 
-            sorted_init = sorted(bot.init_lists[channel_id]["combatants"].items(), key=lambda x: x[1][0], reverse=True)
+            sorted_init = sorted(bot.init_lists[channel_id]["combatants"].items(
+            ), key=lambda x: x[1][0], reverse=True)
 
             if not bot.init_lists[channel_id].get("started", False):
                 bot.init_lists[channel_id]["started"] = True
@@ -2842,7 +2867,8 @@ async def init(ctx: commands.Context, *args: str):
 
             try:
                 if bot.init_lists[channel_id]["current_turn"] < len(sorted_init) - 1:
-                    next_combatant = sorted_init[bot.init_lists[channel_id]["current_turn"] + 1]
+                    next_combatant = sorted_init[bot.init_lists[channel_id]
+                                                 ["current_turn"] + 1]
                 else:
                     next_combatant = sorted_init[0]
                 next_name = next_combatant[0]
@@ -2882,10 +2908,10 @@ async def init(ctx: commands.Context, *args: str):
             await ctx.send(f"Unrecognized subcommand: {args[0]}. Type `!help` for assistance.")
 
     finally:
-            try:
-                await ctx.message.delete()
-            except:
-                pass
+        try:
+            await ctx.message.delete()
+        except:
+            pass
 
 
 @bot.command(aliases=["cbload"])
@@ -2975,15 +3001,22 @@ async def superpower(ctx: commands.Context):
         raw_text = page.wikitext
 
         # Extract the "==Capabilities==" section using regex
-        match = re.search(r'==\s*Capabilities\s*==\n(.*?)(?=\n==)', raw_text, re.DOTALL | re.IGNORECASE)
-        capabilities = match.group(1).strip() if match else "No capabilities section found."
+        match = re.search(r'==\s*Capabilities\s*==\n(.*?)(?=\n==)',
+                          raw_text, re.DOTALL | re.IGNORECASE)
+        capabilities = match.group(1).strip(
+        ) if match else "No capabilities section found."
 
         # Clean wiki markup (very basic)
-        capabilities_cleaned = re.sub(r'\[\[(?:[^|\]]*\|)?([^\]]+)\]\]', r'\1', capabilities)  # Replace links
-        capabilities_cleaned = re.sub(r"'''(.*?)'''", r'\1', capabilities_cleaned)  # Bold
-        capabilities_cleaned = re.sub(r"''(.*?)''", r'\1', capabilities_cleaned)    # Italic
-        capabilities_cleaned = re.sub(r'{{[^}]+}}', '', capabilities_cleaned)       # Remove templates
-        capabilities_cleaned = re.sub(r'<.*?>', '', capabilities_cleaned)           # Remove HTML tags
+        capabilities_cleaned = re.sub(
+            r'\[\[(?:[^|\]]*\|)?([^\]]+)\]\]', r'\1', capabilities)  # Replace links
+        capabilities_cleaned = re.sub(
+            r"'''(.*?)'''", r'\1', capabilities_cleaned)  # Bold
+        capabilities_cleaned = re.sub(
+            r"''(.*?)''", r'\1', capabilities_cleaned)    # Italic
+        capabilities_cleaned = re.sub(
+            r'{{[^}]+}}', '', capabilities_cleaned)       # Remove templates
+        capabilities_cleaned = re.sub(
+            r'<.*?>', '', capabilities_cleaned)           # Remove HTML tags
 
         # Discord Embed
         embed = discord.Embed(
@@ -3008,8 +3041,3 @@ if __name__ == "__main__":
     monsterRepo = MonsterListRepository()
     monsterMapRepo = MonstersUserMapRepository()
     main()
-
-
-
-
-
