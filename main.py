@@ -1299,7 +1299,7 @@ def get_calendar_name() -> str:
     calendar_name = f"{chapter_number}.{session_number} - {date}"
     return calendar_name
 
-
+@bot.command(aliases=["updatecal"])
 async def update_calendar():
     channel_calendar = bot.get_channel(1396001668633722931)
     channel_name = f"📅 {get_calendar_name()}"
