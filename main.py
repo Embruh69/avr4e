@@ -1296,7 +1296,7 @@ def get_calendar_name() -> str:
     chapter_number = (delta_days - 1) // 7 + 1
     session_number = f"{delta_days:02}"
 
-    calendar_name = f"{chapter_number}.{session_number} - {date}"
+    calendar_name = f"{chapter_number}.{session_number} [{date}]"
     return calendar_name
 
 async def update_calendar():
@@ -1383,21 +1383,21 @@ def get_in_game_date(irl_day_number):
         int(math.floor((irl_day_in_year - 1) * 2 / 7))) % len(months)
     day_index = (irl_day_in_year-1) % 7
     if day_index == 0:
-        return f"1 {months[month_index]} - 8 {months[month_index]}"
+        return f"1 - 8 {months[month_index]}"
     elif day_index == 1:
-        return f"9 {months[month_index]} - 16 {months[month_index]}"
+        return f"9 - 16 {months[month_index]}"
     elif day_index == 2:
-        return f"17 {months[month_index]} - 24 {months[month_index]}"
+        return f"17 - 24 {months[month_index]}"
     elif day_index == 3:
         return f"25 {months[month_index]} - 4 {months[month_index+1]}"
     elif day_index == 4:
-        return f"5 {months[month_index]} - 12 {months[month_index]}"
+        return f"5 - 12 {months[month_index]}"
     elif day_index == 5:
-        return f"13 {months[month_index]} - 20 {months[month_index]}"
+        return f"13 - 20 {months[month_index]}"
     elif day_index == 6:
-        return f"21 {months[month_index]} - 28 {months[month_index]}"
+        return f"21 - 28 {months[month_index]}"
     elif day_index == 7:
-        return f"1 {months[month_index]} - 8 {months[month_index]}"
+        return f"1 - 8 {months[month_index]}"
     raise ValueError("Invalid week number computation.")
 
 
