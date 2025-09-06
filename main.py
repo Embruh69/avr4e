@@ -1293,7 +1293,7 @@ def get_calendar_name() -> str:
     delta_days = (now - start_date).days + 1
 
     date = get_in_game_date(delta_days)
-    chapter_number = (delta_days - 1) // 7 + 1
+    chapter_number = (delta_days) // 7 + 1
     session_number = f"{delta_days:02}"
 
     calendar_name = f"{chapter_number}.{session_number} - {date}"
